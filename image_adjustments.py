@@ -1,26 +1,12 @@
 import numpy as np
 import colorsys
+import constants
 
 
 class ImageAdjustment:
     """
     Class responsible for image adjustments.
     """
-    MIN_INTENSITY = 0
-    MAX_INTENSITY = 255
-    MIN_BRIGHTNESS_VAL = -255
-    MAX_BRIGHTNESS_VAL = 255
-    MIN_CONTRAST_VAL = -255
-    MAX_CONTRAST_VAL = 255
-    CONTRAST_NORM_CONST = 259
-    CONTRAST_MID_VAL = 128
-    MIN_SATURATION_VAL = -100
-    MAX_SATURATION_VAL = 100
-
-    INVALID_BRIGHTNESS_VAL_ERR_MSG = "Brightness adjustment value should be between -255 to 255."
-    INVALID_CONTRAST_VAL_ERR_MSG = "Contrast adjustment value should be between -255 to 255."
-    INVALID_SATURATION_VAL_ERR_MSG = "Saturation adjustment value should be between -100 to 100."
-
     @staticmethod
     def adjust_brightness(image_array: np.ndarray, value: int) -> np.ndarry:
         """
@@ -32,10 +18,9 @@ class ImageAdjustment:
         :raise: ValueError in case the value isn't in range [-255, 255].
         """
         # Checking if value is valid
-        if value > ImageAdjustment.MAX_BRIGHTNESS_VAL or value < ImageAdjustment.MIN_BRIGHTNESS_VAL:
-            raise ValueError(ImageAdjustment.INVALID_BRIGHTNESS_VAL_ERR_MSG)
-
-        return np.clip(image_array + value, ImageAdjustment.MIN_INTENSITY, ImageAdjustment.MAX_INTENSITY)
+        if value > constants.MAX_BRIGHTNESS_VAL or value < constants.MIN_BRIGHTNESS_VAL:
+            raise ValueError(constants.INVALID_BRIGHTNESS_VAL_ERR_MSG)
+        return np.clip(image_array + value, constants.MIN_INTENSITY, constants.MAX_INTENSITY)
 
     @staticmethod
     def adjust_contrast(image_array: np.ndarry, value: int) -> np.ndarray:
@@ -48,16 +33,16 @@ class ImageAdjustment:
         :raise: ValueError in case the value isn't in range [-255, 255].
         """
         # Checking if value is valid
-        if value > ImageAdjustment.MAX_CONTRAST_VAL or value < ImageAdjustment.MIN_CONTRAST_VAL:
-            raise ValueError(ImageAdjustment.INVALID_BRIGHTNESS_VAL_ERR_MSG)
+        if value > constants.MAX_CONTRAST_VAL or value < constants.MIN_CONTRAST_VAL:
+            raise ValueError(constants.INVALID_BRIGHTNESS_VAL_ERR_MSG)
 
         # Calculating contrast factor
-        factor = (ImageAdjustment.CONTRAST_NORM_CONST * (value + ImageAdjustment.MAX_INTENSITY)) / (
-                ImageAdjustment.MAX_INTENSITY * (ImageAdjustment.CONTRAST_NORM_CONST - value))
+        factor = (constants.CONTRAST_NORM_CONST * (value + constants.MAX_INTENSITY)) / (
+                constants.MAX_INTENSITY * (constants.CONTRAST_NORM_CONST - value))
 
-        return np.clip(ImageAdjustment.CONTRAST_MID_VAL + factor * (image_array - ImageAdjustment.CONTRAST_MID_VAL),
-                       ImageAdjustment.MIN_INTENSITY,
-                       ImageAdjustment.MAX_INTENSITY)
+        return np.clip(constants.CONTRAST_MID_VAL + factor * (image_array - constants.CONTRAST_MID_VAL),
+                       constants.MIN_INTENSITY,
+                       constants.MAX_INTENSITY)
 
     @staticmethod
     def adjust_saturation(image_array: np.ndarry, value: int) -> np.ndarray:
@@ -73,11 +58,11 @@ class ImageAdjustment:
         # formula for adjusting image saturation?"
 
         # Checking if value is valid
-        if value > ImageAdjustment.MAX_SATURATION_VAL or value < ImageAdjustment.MIN_SATURATION_VAL:
-            raise ValueError(ImageAdjustment.INVALID_SATURATION_VAL_ERR_MSG)
+        if value > constants.MAX_SATURATION_VAL or value < constants.MIN_SATURATION_VAL:
+            raise ValueError(constants.INVALID_SATURATION_VAL_ERR_MSG)
 
         # Normalizing values between 0 and 1
-        image_array = image_array / float(ImageAdjustment.MAX_INTENSITY)
+        image_array = image_array / float(constants.MAX_INTENSITY)
 
         for i in range(image_array.shape[0]):
             for j in range(image_array.shape[1]):
@@ -85,12 +70,12 @@ class ImageAdjustment:
                 r, g, b = image_array[i, j]
                 h, l, s = colorsys.rgb_to_hls(r, g, b)
                 # Adjusting Saturation value
-                saturation_factor = 1 + value / float(ImageAdjustment.MAX_SATURATION_VAL)
+                saturation_factor = 1 + value / float(constants.MAX_SATURATION_VAL)
                 s = min(max(s * saturation_factor, 0), 1)
                 # Converting back from HLS to RGB
                 r, g, b = colorsys.hls_to_rgb(h, l, s)
                 image_array[i, j] = [r, g, b]
         # Converting values back to range of [0, 255]
-        return np.clip(image_array * ImageAdjustment.MAX_INTENSITY,
-                       ImageAdjustment.MIN_INTENSITY,
-                       ImageAdjustment.MAX_INTENSITY).astype(np.uint8)
+        return np.clip(image_array * constants.MAX_INTENSITY,
+                       constants.MIN_INTENSITY,
+                       constants.MAX_INTENSITY).astype(np.uint8)
