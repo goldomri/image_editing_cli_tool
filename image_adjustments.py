@@ -7,8 +7,9 @@ class ImageAdjustment:
     """
     Class responsible for image adjustments.
     """
+
     @staticmethod
-    def adjust_brightness(image_array: np.ndarray, value: int) -> np.ndarry:
+    def adjust_brightness(image_array: np.ndarray, value: int) -> np.ndarray:
         """
         Adjusts brightness of an image which is represented as a numpy array.
         :param image_array: The image in numpy array form.
@@ -20,10 +21,10 @@ class ImageAdjustment:
         # Checking if value is valid
         if value > constants.MAX_BRIGHTNESS_VAL or value < constants.MIN_BRIGHTNESS_VAL:
             raise ValueError(constants.INVALID_BRIGHTNESS_VAL_ERR_MSG)
-        return np.clip(image_array + value, constants.MIN_INTENSITY, constants.MAX_INTENSITY)
+        return np.clip(image_array + value, constants.MIN_INTENSITY, constants.MAX_INTENSITY).astype(np.uint8)
 
     @staticmethod
-    def adjust_contrast(image_array: np.ndarry, value: int) -> np.ndarray:
+    def adjust_contrast(image_array: np.ndarray, value: int) -> np.ndarray:
         """
         Adjusts contrast of an image which is represented as a numpy array.
         :param image_array: The image in numpy array form.
@@ -42,10 +43,10 @@ class ImageAdjustment:
 
         return np.clip(constants.CONTRAST_MID_VAL + factor * (image_array - constants.CONTRAST_MID_VAL),
                        constants.MIN_INTENSITY,
-                       constants.MAX_INTENSITY)
+                       constants.MAX_INTENSITY).astype(np.uint8)
 
     @staticmethod
-    def adjust_saturation(image_array: np.ndarry, value: int) -> np.ndarray:
+    def adjust_saturation(image_array: np.ndarray, value: int) -> np.ndarray:
         """
         Adjusts saturation of an image which is represented as a numpy array.
         :param image_array: The image in numpy array form.
@@ -63,14 +64,13 @@ class ImageAdjustment:
 
         # Normalizing values between 0 and 1
         image_array = image_array / float(constants.MAX_INTENSITY)
-
+        saturation_factor = 1 + value / float(constants.MAX_SATURATION_VAL)
         for i in range(image_array.shape[0]):
             for j in range(image_array.shape[1]):
                 # Converting every pixel from RGB to HLS
                 r, g, b = image_array[i, j]
                 h, l, s = colorsys.rgb_to_hls(r, g, b)
                 # Adjusting Saturation value
-                saturation_factor = 1 + value / float(constants.MAX_SATURATION_VAL)
                 s = min(max(s * saturation_factor, 0), 1)
                 # Converting back from HLS to RGB
                 r, g, b = colorsys.hls_to_rgb(h, l, s)
