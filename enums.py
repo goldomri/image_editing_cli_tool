@@ -6,8 +6,9 @@ class AdjustmentType(Enum):
     Enum for image adjustment types.
     """
     BRIGHTNESS = "brightness"
-    SATURATION = "saturation"
     CONTRAST = "contrast"
+    SATURATION = "saturation"
+
 
 
 class FilterType(Enum):
