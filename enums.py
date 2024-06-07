@@ -10,7 +10,6 @@ class AdjustmentType(Enum):
     SATURATION = "saturation"
 
 
-
 class FilterType(Enum):
     """
     Enum for image filter types.
