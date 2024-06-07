@@ -114,12 +114,21 @@ class SharpenFilter(Filter):
     """
 
     def apply_filter(self, image: Image, x=None, y=None) -> Image:
-        pass
+        # Checking if x is inputted
+        if not x:
+            raise ValueError(constants.UNSPECIFIED_SHARPEN_MAGNITUDE_ERR_MSG)
+        if x < 0:
+            raise ValueError(constants.NEGATIVE_SHARPEN_MAGNITUDE_ERR_MSG)
+        image_array = ImageUtils.convert_image_to_array(image)
+        kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
+        image_array = self.convolution(image_array, kernel) * x
+        image_array = np.clip(image_array, constants.MIN_INTENSITY, constants.MAX_INTENSITY).astype(np.uint8)
+        return Image.fromarray(image_array)
 
 
 if __name__ == "__main__":
-    img = Image.open("test.jpg")
-    filter = BoxBlurFilter()
-    new_image = filter.apply_filter(img, 1, 1)
+    img = Image.open("image_to_filter.jpg")
+    filter = SharpenFilter()
+    new_image = filter.apply_filter(img, 1)
     new_image.show()
 
