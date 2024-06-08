@@ -18,3 +18,21 @@ CONVOLUTION_KERNEL_SIZE_ERR_MSG = "Convolution kernel size should be smaller tha
 UNSPECIFIED_KERNEL_SIZE_ERR_MSG = "Kernel size should be inputted by specifying x and y arguments."
 UNSPECIFIED_SHARPEN_MAGNITUDE_ERR_MSG = "Sharpening magnitude should be inputted by specifying x argument."
 NEGATIVE_SHARPEN_MAGNITUDE_ERR_MSG = "Sharpening magnitude should be positive."
+INVALID_ADJUSTMENT_ERR_MSG = "Invalid adjustment type."
+INVALID_Filter_ERR_MSG = "Invalid filter type."
+INVALID_ADJUSTMENT_VALUE = "Every adjustment should get an integer value."
+INVALID_BLUR_ARGUMENTS = "Blur filter should get x and y arguments, both positive integers."
+INVALID_SHARPEN_ARGUMENT = "Sharpen filter should get x argument, a float."
+
+
+# Commands
+EDIT_CMD = "edit_image"
+IMAGE_CMD = "--image"
+FILTER_CMD = "--filter"
+ADJUST_CMD = "--adjust"
+X_CMD = "--x"
+Y_CMD = "--y"
+DISPLAY_CMD = "--display"
+OUTPUT_CMD = "--output"
+
+

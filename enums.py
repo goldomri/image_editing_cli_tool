@@ -17,3 +17,13 @@ class FilterType(Enum):
     BLUR = "blur"
     EDGE_DETECTION = "edge_detection"
     SHARPEN = "sharpen"
+
+
+class OperationType(Enum):
+    """
+    Enum for image operation types.
+    """
+    ADJUSTMENT = "adjustment"
+    FILTER = "filter"
+    DISPLAY = "display"
+    OUTPUT = "output"
