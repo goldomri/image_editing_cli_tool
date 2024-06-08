@@ -5,8 +5,17 @@ import constants
 
 
 class CLI:
+    """
+    Class responsible for handling command line arguments parsing.
+    """
     @staticmethod
-    def parse_command_line_arguments(args: List):
+    def parse_command_line_arguments(args: List) -> Tuple:
+        """
+        Parses command line arguments
+        :param args: Command line arguments inputted.
+        :return: A tuple containing the input image path and a list of operation to apply on the image.
+        :raise: ValueError in case of invalid arguments.
+        """
         image_path = CLI._parse_initialization(args)
         all_operations = []
         i = 4
