@@ -121,13 +121,13 @@ class SharpenFilter(Filter):
         :param x: Sharpening magnitude.
         :param y: Irrelevant argument.
         :return: New filtered image.
-        :raise: ValueError if x is not given as input or x is negative.
+        :raise: ValueError if x is smaller than 1.
         """
         # Checking if x is inputted
         if not x:
             raise ValueError(constants.UNSPECIFIED_SHARPEN_MAGNITUDE_ERR_MSG)
-        if x < 0:
-            raise ValueError(constants.NEGATIVE_SHARPEN_MAGNITUDE_ERR_MSG)
+        if x < 1:
+            raise ValueError(constants.INVALID_SHARPEN_MAGNITUDE_ERR_MSG)
         image_array = ImageUtils.convert_image_to_array(image)
         kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
         image_array = self.convolution(image_array, kernel) * x

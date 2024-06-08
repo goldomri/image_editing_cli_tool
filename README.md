@@ -55,7 +55,7 @@ The tool supports the following commands:
                   Example command could be: **`--filter edge_detection`** to apply an edge detection filter.
 
   3.  <u>*Sharpen*</u> - Sharpens and image with a given magnitude factor. Should recieve x arguments representing
-                  the magnitude of the filter. x should be a positive float.
+                  the magnitude of the filter. x should be a float greater than 1.
                   Example command could be: **`--filter sharpen --x 1.2`** to apply a sharpening filter with magnitude of 1.2.
 
 - **`--adjust <adjustment-name> <value>`**: Applies a specified adjustment with the given value. adjustment options:
