@@ -67,6 +67,7 @@ class BoxBlurFilter(Filter):
         :param x: x size of kernel.
         :param y: y size of kernel.
         :return: New filtered image.
+        :raise: ValueError if x or y are not given as input.
         """
         # Checking if x and y are inputted
         if not x or not y:
@@ -114,6 +115,14 @@ class SharpenFilter(Filter):
     """
 
     def apply_filter(self, image: Image, x=None, y=None) -> Image:
+        """
+        Method for applying the Sharpen filter.
+        :param image: Image to apply filter on.
+        :param x: Sharpening magnitude.
+        :param y: Irrelevant argument.
+        :return: New filtered image.
+        :raise: ValueError if x is not given as input or x is negative.
+        """
         # Checking if x is inputted
         if not x:
             raise ValueError(constants.UNSPECIFIED_SHARPEN_MAGNITUDE_ERR_MSG)
@@ -124,11 +133,3 @@ class SharpenFilter(Filter):
         image_array = self.convolution(image_array, kernel) * x
         image_array = np.clip(image_array, constants.MIN_INTENSITY, constants.MAX_INTENSITY).astype(np.uint8)
         return Image.fromarray(image_array)
-
-
-if __name__ == "__main__":
-    img = Image.open("image_to_filter.jpg")
-    filter = SharpenFilter()
-    new_image = filter.apply_filter(img, 1)
-    new_image.show()
-

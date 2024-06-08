@@ -1,4 +1,3 @@
-import sys
 from typing import List, Tuple
 from enums import AdjustmentType, FilterType, OperationType
 import constants
@@ -8,6 +7,7 @@ class CLI:
     """
     Class responsible for handling command line arguments parsing.
     """
+
     @staticmethod
     def parse_command_line_arguments(args: List) -> Tuple:
         """

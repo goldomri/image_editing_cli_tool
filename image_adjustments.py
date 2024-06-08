@@ -39,7 +39,7 @@ class ImageAdjustment:
         """
         # Checking if value is valid
         if value > constants.MAX_CONTRAST_VAL or value < constants.MIN_CONTRAST_VAL:
-            raise ValueError(constants.INVALID_BRIGHTNESS_VAL_ERR_MSG)
+            raise ValueError(constants.INVALID_CONTRAST_VAL_ERR_MSG)
 
         image_array = ImageUtils.convert_image_to_array(image)
         # Calculating contrast factor

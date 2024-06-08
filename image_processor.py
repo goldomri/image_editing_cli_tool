@@ -87,6 +87,7 @@ class ImageProcessor:
         Saves the current image in a designated path.
         :param output_path: Path in which to save image into.
         :return: None.
+        :raise: IOError in case there was a problem in saving the image.
         """
         try:
             self._image.save(output_path)
