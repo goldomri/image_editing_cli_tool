@@ -4,7 +4,7 @@ from image_adjustments import ImageAdjustment
 from image_filters import *
 
 
-class ImageProcessor:
+class ImageEditor:
     """
     Class applying all the image operation according to given list of operations.
     """
