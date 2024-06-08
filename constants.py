@@ -20,9 +20,13 @@ UNSPECIFIED_SHARPEN_MAGNITUDE_ERR_MSG = "Sharpening magnitude should be inputted
 NEGATIVE_SHARPEN_MAGNITUDE_ERR_MSG = "Sharpening magnitude should be positive."
 INVALID_ADJUSTMENT_ERR_MSG = "Invalid adjustment type."
 INVALID_Filter_ERR_MSG = "Invalid filter type."
-INVALID_ADJUSTMENT_VALUE = "Every adjustment should get an integer value."
-INVALID_BLUR_ARGUMENTS = "Blur filter should get x and y arguments, both positive integers."
-INVALID_SHARPEN_ARGUMENT = "Sharpen filter should get x argument, a float."
+INVALID_ADJUSTMENT_VALUE_ERR_MSG = "Every adjustment should get an integer value."
+INVALID_BLUR_ARGUMENTS_ERR_MSG = "Blur filter should get x and y arguments, both positive integers."
+INVALID_SHARPEN_ARGUMENT_ERR_MSG = "Sharpen filter should get x argument, a float."
+INVALID_OUTPUT_ARGUMENT_ERR_MSG = "Output operation should get a file destination path."
+INVALID_COMMAND_ERR_MSG = "Invalid command."
+INVALID_FIRST_ARGUMENT_ERR_MSG = "First argument of the program should be edit_image."
+INVALID_IMAGE_ARGUMENT_ERR_MSG = "Program should get an image path in format: '--image <image_path>'."
 
 
 # Commands

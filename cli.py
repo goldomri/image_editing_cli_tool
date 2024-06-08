@@ -7,15 +7,7 @@ import constants
 class CLI:
     @staticmethod
     def parse_command_line_arguments(args: List):
-        # Checking if first argument is edit_image
-        if args[1] != constants.EDIT_CMD:
-            # TODO
-            raise ValueError()
-        # Checking if second argument is --image
-        if args[2] != constants.IMAGE_CMD:
-            # TODO
-            raise ValueError()
-        image_path = args[3]
+        image_path = CLI._parse_initialization(args)
         all_operations = []
         i = 4
         while i < len(args):
@@ -27,19 +19,32 @@ class CLI:
                 i, operations = CLI._parse_adjustment(args, i + 1)
 
             elif cur_arg == constants.DISPLAY_CMD:
-                pass
-                i, operations = parse_display(args, i + 1)
-
+                i, operations = CLI._parse_display(args, i + 1)
 
             elif cur_arg == constants.OUTPUT_CMD:
-                pass
-                i, operations = parse_output(args, i + 1)
-            # TODO
+                i, operations = CLI._parse_output(args, i + 1)
+
             else:
-                raise ValueError()
+                raise ValueError(constants.INVALID_COMMAND_ERR_MSG)
 
             all_operations.extend(operations)
         return image_path, all_operations
+
+    @staticmethod
+    def _parse_initialization(args) -> str:
+        """
+        Responsible for parsing the start of the command line arguments.
+        :param args: Command line arguments inputted.
+        :return: Input image path.
+        :raise: ValueError in case of invalid arguments.
+        """
+        # Checking if first argument is edit_image
+        if len(args) < 2 or args[1] != constants.EDIT_CMD:
+            raise ValueError(constants.INVALID_FIRST_ARGUMENT_ERR_MSG)
+        # Checking if second argument is --image
+        if len(args) < 4 or args[2] != constants.IMAGE_CMD:
+            raise ValueError(constants.INVALID_IMAGE_ARGUMENT_ERR_MSG)
+        return args[3]
 
     @staticmethod
     def _parse_filter(args, i) -> Tuple:
@@ -63,13 +68,13 @@ class CLI:
         elif filter == FilterType.BLUR.value:
             # Checking if got correct arguments
             if i + 4 >= len(args):
-                raise ValueError(constants.INVALID_BLUR_ARGUMENTS)
+                raise ValueError(constants.INVALID_BLUR_ARGUMENTS_ERR_MSG)
             x = args[i + 1]
             y = args[i + 3]
             x_value = args[i + 2]
             y_value = args[i + 4]
             if x != constants.X_CMD or y != constants.Y_CMD or not x_value.isdigit() or not y_value.isdigit():
-                raise ValueError(constants.INVALID_BLUR_ARGUMENTS)
+                raise ValueError(constants.INVALID_BLUR_ARGUMENTS_ERR_MSG)
 
             operations.append((OperationType.FILTER.value, filter, int(x_value), int(y_value)))
             return i + 5, operations
@@ -77,11 +82,11 @@ class CLI:
         elif filter == FilterType.SHARPEN.value:
             # Checking if got correct arguments
             if i + 2 >= len(args):
-                raise ValueError(constants.INVALID_SHARPEN_ARGUMENT)
+                raise ValueError(constants.INVALID_SHARPEN_ARGUMENT_ERR_MSG)
             x = args[i + 1]
             x_value = args[i + 2]
             if x != constants.X_CMD or not CLI._is_float(x_value):
-                raise ValueError(constants.INVALID_SHARPEN_ARGUMENT)
+                raise ValueError(constants.INVALID_SHARPEN_ARGUMENT_ERR_MSG)
 
             operations.append((OperationType.FILTER.value, filter, float(x_value)))
             return i + 3, operations
@@ -105,7 +110,7 @@ class CLI:
             i += 1
             # Checking if inputted value is signed int
             if i >= len(args) or not CLI._is_signed_int(args[i]):
-                raise ValueError(constants.INVALID_ADJUSTMENT_VALUE)
+                raise ValueError(constants.INVALID_ADJUSTMENT_VALUE_ERR_MSG)
             value = int(args[i])
             operations.append((OperationType.ADJUSTMENT.value, adjustment, value))
             # Moving to the next adjustment
@@ -120,8 +125,20 @@ class CLI:
         :param i: Current index to start iterating on
         :return: A tuple containing the next index of command line arguments and a list of the parsed display operation.
         """
-        return i+1, [OperationType.DISPLAY.value]
+        return i, [(OperationType.DISPLAY.value,)]
 
+    @staticmethod
+    def _parse_output(args, i) -> Tuple:
+        """
+        Responsible for parsing a output command from the command line.
+        :param args: Command line arguments inputted.
+        :param i: Current index to start iterating on
+        :return: A tuple containing the next index of command line arguments and a list of the parsed output operation.
+        :raise: ValueError in case there is no output destination inputted.
+        """
+        if i >= len(args):
+            raise ValueError(constants.INVALID_OUTPUT_ARGUMENT_ERR_MSG)
+        return i + 1, [(OperationType.OUTPUT.value, args[i])]
 
     @staticmethod
     def _is_signed_int(s):
