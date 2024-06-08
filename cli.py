@@ -130,7 +130,7 @@ class CLI:
     @staticmethod
     def _parse_output(args, i) -> Tuple:
         """
-        Responsible for parsing a output command from the command line.
+        Responsible for parsing an output command from the command line.
         :param args: Command line arguments inputted.
         :param i: Current index to start iterating on
         :return: A tuple containing the next index of command line arguments and a list of the parsed output operation.
@@ -169,12 +169,3 @@ class CLI:
             return True
         except ValueError:
             return False
-
-
-def main():
-    arguments = sys.argv
-    print(CLI.parse_command_line_arguments(arguments))
-
-
-if __name__ == '__main__':
-    main()
