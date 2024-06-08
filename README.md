@@ -31,11 +31,11 @@ python edit_image.py edit_image --image <path-to-image> [--filter <filter-name> 
 
 - Apply a blur filter with kernel size of [3,3] and increase brightness by 60 units, while displaying the result image:
   ```
-  python image_editor.py edit_image --image input.jpg --filter blur --x 3 --y 3 --adjust brightness 60 --display
+  python edit_image.py edit_image --image input.png --filter blur --x 3 --y 3 --adjust brightness 60 --display
   ```
 - Decrease contrast by 20 units and apply a sharpening filter with magnitude 1.1, while saving the result image:
   ```
-  python image_editor.py edit_image --image input.jpg --adjust contrast -20 --filter sharpen --x 1.1 --output output.jpg
+  python edit_image.py edit_image --image input.png --adjust contrast -20 --filter sharpen --x 1.1 --output output.png
   ```
 
 ## API
