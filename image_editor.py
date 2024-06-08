@@ -2,6 +2,7 @@ from typing import List, Tuple
 from enums import AdjustmentType, FilterType, OperationType
 from image_adjustments import ImageAdjustment
 from image_filters import *
+from image_utils import ImageUtils
 
 
 class ImageEditor:
@@ -12,6 +13,7 @@ class ImageEditor:
     def __init__(self, image_path: str, operations: List):
         try:
             self._image = Image.open(image_path)
+            self._image = ImageUtils.convert_to_rgb(self._image)
         except IOError as e:
             raise IOError(f"Unable to open image: {e}.")
 
