@@ -68,6 +68,7 @@ class ImageEditor:
         """
         filter_type = filter_operation[1]
         filter = self._filters[filter_type]
+
         if filter_type == FilterType.BLUR.value:
             self._image = filter.apply_filter(self._image, filter_operation[2], filter_operation[3])
 

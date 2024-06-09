@@ -13,6 +13,7 @@ class Filter(ABC):
     def convolution(self, image_array: np.ndarray, kernel: np.ndarray) -> np.ndarray:
         """
         Applies a convolution with specified kernel to the image array.
+        :param image_array: Image to convolve on in numpy array form.
         :param kernel: Kernel of the convolution.
         :return: The new image array after convolution operation.
         :raise: ValueError in case the kernel size is bigger than the image size.

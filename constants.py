@@ -28,7 +28,6 @@ INVALID_COMMAND_ERR_MSG = "Invalid command."
 INVALID_FIRST_ARGUMENT_ERR_MSG = "First argument of the program should be edit_image."
 INVALID_IMAGE_ARGUMENT_ERR_MSG = "Program should get an image path in format: '--image <image_path>'."
 
-
 # Commands
 EDIT_CMD = "edit_image"
 IMAGE_CMD = "--image"
@@ -38,5 +37,3 @@ X_CMD = "--x"
 Y_CMD = "--y"
 DISPLAY_CMD = "--display"
 OUTPUT_CMD = "--output"
-
-
