@@ -71,6 +71,10 @@ The tool supports the following commands:
                   integer in range [-100, 100].
                   Example command could be: **`--adjustment saturation 50`** to increase saturation by 50.
 
+  In addition, multiple --adjust parameters can be chained to apply several adjustments in one command. for example:
+  **`--adjustment brightness -10 saturation 70`** is a valid command, and it will decrease brightness by 10 and then 
+increase saturation by 70.
+
 - **`--display`**: Displays the image after completing the previous actions.
 
 - **`--output <output-path>`**: Saves the image in the given path after completing the previous actions.
