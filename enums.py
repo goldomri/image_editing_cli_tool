@@ -8,6 +8,8 @@ class AdjustmentType(Enum):
     BRIGHTNESS = "brightness"
     CONTRAST = "contrast"
     SATURATION = "saturation"
+    TEMPERATURE = "temperature"
+    EXPOSURE = "exposure"
 
 
 class FilterType(Enum):
@@ -17,6 +19,8 @@ class FilterType(Enum):
     BLUR = "blur"
     EDGE_DETECTION = "edge_detection"
     SHARPEN = "sharpen"
+    INVERT = "invert"
+    SEPIA = "sepia"
 
 
 class OperationType(Enum):

@@ -57,6 +57,12 @@ The tool supports the following commands:
   3.  <u>*Sharpen*</u> - Sharpens and image with a given magnitude factor. Should recieve x arguments representing
                   the magnitude of the filter. x should be a float greater than 1.
                   Example command could be: **`--filter sharpen --x 1.2`** to apply a sharpening filter with magnitude of 1.2.
+  
+  4.  <u>*Invert*</u> - Inverts colors of an image. Doesn't need to receive arguments.
+                  Example command could be: **`--filter invert`** to apply an inversion filter.
+  
+  5.  <u>*Sepia*</u> - Gives an image a warm brown tone, which makes it look like an old photograph. Doesn't need to receive arguments.
+                  Example command could be: **`--filter sepia`** to apply a sepia filter.
 
 - **`--adjust <adjustment-name> <value>`**: Applies a specified adjustment with the given value. adjustment options:
   1.  <u>*Brightness*</u> - Adjusts the brightness of an image with a given adjustment value. Value should be an
@@ -70,6 +76,13 @@ The tool supports the following commands:
   3.  <u>*Saturation*</u> - Adjusts the saturation of an image with a given adjustment value. Value should be an
                   integer in range [-100, 100].
                   Example command could be: **`--adjustment saturation 50`** to increase saturation by 50.
+  4.  <u>*Temperature*</u> - Adjusts the temperature of an image with a given adjustment value. Value should be an
+                  integer in range [-100, 100].
+                  Example command could be: **`--adjustment temperature -40`** to decrease saturation by 40.
+  
+  5.  <u>*Exposure*</u> - Adjusts the exposure of an image with a given adjustment value. Value should be an
+                  integer in range [-100, 100].
+                  Example command could be: **`--adjustment exposure 70`** to increase saturation by 70.
 
   In addition, multiple --adjust parameters can be chained to apply several adjustments in one command. for example:
   **`--adjustment brightness -10 saturation 70`** is a valid command, and it will decrease brightness by 10 and then 

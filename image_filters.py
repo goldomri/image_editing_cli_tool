@@ -96,8 +96,12 @@ class EdgeDetectionFilter(Filter):
         image = ImageUtils.convert_to_grayscale(image)
         image_array = ImageUtils.convert_image_to_array(image)
         # Initializing filter kernels
-        sobel_x = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
-        sobel_y = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
+        sobel_x = np.array([[-1, 0, 1],
+                            [-2, 0, 2],
+                            [-1, 0, 1]])
+        sobel_y = np.array([[1, 2, 1],
+                            [0, 0, 0],
+                            [-1, -2, -1]])
         # Applying convolution
         grad_x = self.convolution(image_array, sobel_x)
         grad_y = self.convolution(image_array, sobel_y)
@@ -130,7 +134,49 @@ class SharpenFilter(Filter):
         if x < 1:
             raise ValueError(constants.INVALID_SHARPEN_MAGNITUDE_ERR_MSG)
         image_array = ImageUtils.convert_image_to_array(image)
-        kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
+        kernel = np.array([[0, -1, 0],
+                           [-1, 5, -1],
+                           [0, -1, 0]])
         image_array = self.convolution(image_array, kernel) * x
+        image_array = np.clip(image_array, constants.MIN_INTENSITY, constants.MAX_INTENSITY).astype(np.uint8)
+        return Image.fromarray(image_array)
+
+
+class InvertFilter(Filter):
+    """
+    Class for applying an inverting colors filter.
+    """
+
+    def apply_filter(self, image: Image, x=None, y=None) -> Image:
+        """
+        Method for applying the Invert Colors filter.
+        :param image: Image to apply filter on.
+        :param x: Irrelevant argument.
+        :param y: Irrelevant argument.
+        :return: New filtered image.
+        """
+        image_array = ImageUtils.convert_image_to_array(image).astype(np.uint8)
+        inverted_image_array = constants.MAX_INTENSITY - image_array
+        return Image.fromarray(inverted_image_array)
+
+
+class SepiaFilter(Filter):
+    """
+    Class for applying a Sepia filter.
+    """
+
+    def apply_filter(self, image: Image, x=None, y=None) -> Image:
+        """
+        Method for applying the Sepia filter.
+        :param image: Image to apply filter on.
+        :param x: Irrelevant argument.
+        :param y: Irrelevant argument.
+        :return: New filtered image.
+        """
+        image_array = ImageUtils.convert_image_to_array(image)
+        sepia_filter = np.array([[0.393, 0.769, 0.189],
+                                 [0.349, 0.686, 0.168],
+                                 [0.272, 0.534, 0.131]])
+        image_array = image_array.dot(sepia_filter.T)
         image_array = np.clip(image_array, constants.MIN_INTENSITY, constants.MAX_INTENSITY).astype(np.uint8)
         return Image.fromarray(image_array)

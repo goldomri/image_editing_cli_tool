@@ -70,7 +70,7 @@ class CLI:
         operations = []
 
         # Edge detection doesn't get arguments
-        if filter == FilterType.EDGE_DETECTION.value:
+        if filter in [FilterType.EDGE_DETECTION.value, FilterType.INVERT.value, FilterType.SEPIA.value]:
             operations.append((OperationType.FILTER.value, filter))
             return i + 1, operations
 

@@ -22,13 +22,17 @@ class ImageEditor:
         self._adjustments = {
             AdjustmentType.BRIGHTNESS.value: ImageAdjustment.adjust_brightness,
             AdjustmentType.CONTRAST.value: ImageAdjustment.adjust_contrast,
-            AdjustmentType.SATURATION.value: ImageAdjustment.adjust_saturation
+            AdjustmentType.SATURATION.value: ImageAdjustment.adjust_saturation,
+            AdjustmentType.TEMPERATURE.value: ImageAdjustment.adjust_temperature,
+            AdjustmentType.EXPOSURE.value: ImageAdjustment.adjust_exposure
         }
 
         self._filters = {
             FilterType.BLUR.value: BoxBlurFilter(),
             FilterType.EDGE_DETECTION.value: EdgeDetectionFilter(),
             FilterType.SHARPEN.value: SharpenFilter(),
+            FilterType.INVERT.value: InvertFilter(),
+            FilterType.SEPIA.value: SepiaFilter()
         }
 
     def apply_operations(self) -> None:
@@ -69,13 +73,16 @@ class ImageEditor:
         filter_type = filter_operation[1]
         filter = self._filters[filter_type]
 
+        # filters with two parameters
         if filter_type == FilterType.BLUR.value:
             self._image = filter.apply_filter(self._image, filter_operation[2], filter_operation[3])
 
+        # filters with one parameter
         elif filter_type == FilterType.SHARPEN.value:
             self._image = filter.apply_filter(self._image, filter_operation[2])
 
-        elif filter_type == FilterType.EDGE_DETECTION.value:
+        # Filters with no parameters
+        elif filter_type in [FilterType.EDGE_DETECTION.value, FilterType.INVERT.value, FilterType.SEPIA.value]:
             self._image = filter.apply_filter(self._image)
 
     def _display_image(self) -> None:
