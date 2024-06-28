@@ -1,8 +1,9 @@
-from typing import List, Tuple
+from typing import List
 from enums import AdjustmentType, FilterType, OperationType
 from image_adjustments import *
 from image_filters import *
 from image_utils import *
+from image_operation import ImageOperation
 
 
 class ImageEditor:
@@ -10,7 +11,7 @@ class ImageEditor:
     Class applying all the image operation according to given list of operations.
     """
 
-    def __init__(self, image_path: str, operations: List):
+    def __init__(self, image_path: str, operations: List[ImageOperation]):
         try:
             self._image = Image.open(image_path)
             self._image = convert_to_rgb(self._image)
@@ -41,7 +42,7 @@ class ImageEditor:
         :return: None.
         """
         for operation in self._operations:
-            operation_type = operation[0]
+            operation_type = operation.type
             if operation_type == OperationType.ADJUSTMENT.value:
                 self._adjust_image(operation)
 
@@ -52,33 +53,33 @@ class ImageEditor:
                 self._display_image()
 
             elif operation_type == OperationType.OUTPUT.value:
-                self._save_image(operation[1])
+                self._save_image(operation.output_path)
 
-    def _adjust_image(self, adjustment_operation: Tuple) -> None:
+    def _adjust_image(self, adjustment_operation: ImageOperation) -> None:
         """
         Adjusts the image.
-        :param adjustment_operation: A tuple consisting the adjustment type and necessary values.
+        :param adjustment_operation: An ImageOperation representing the adjustment.
         :return: None. Changes self._image to the adjusted image.
         """
-        adjustment_type = adjustment_operation[1]
-        value = adjustment_operation[2]
+        adjustment_type = adjustment_operation.sub_type
+        value = adjustment_operation.value
         self._image = self._adjustments[adjustment_type](self._image, value)
 
-    def _filter_image(self, filter_operation: Tuple) -> None:
+    def _filter_image(self, filter_operation: ImageOperation) -> None:
         """
         Filters the image.
-        :param filter_operation: A tuple consisting the filter type and necessary values.
+        :param filter_operation: An ImageOperation representing the filter.
         :return: None. Changes self._image to the filtered image.
         """
-        filter_type = filter_operation[1]
+        filter_type = filter_operation.sub_type
 
         # filters with two parameters
         if filter_type == FilterType.BLUR.value:
-            self._image = self._filters[filter_type](self._image, filter_operation[2], filter_operation[3])
+            self._image = self._filters[filter_type](self._image, filter_operation.x, filter_operation.y)
 
         # filters with one parameter
         elif filter_type == FilterType.SHARPEN.value:
-            self._image = self._filters[filter_type](self._image, filter_operation[2])
+            self._image = self._filters[filter_type](self._image, filter_operation.x)
 
         # Filters with no parameters
         elif filter_type in [FilterType.EDGE_DETECTION.value, FilterType.INVERT.value, FilterType.SEPIA.value]:

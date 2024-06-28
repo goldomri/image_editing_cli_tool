@@ -1,13 +1,14 @@
 from typing import List, Tuple
 from enums import AdjustmentType, FilterType, OperationType
 import constants
+from image_operation import ImageOperation
 
 
 def parse_command_line_arguments(args: List) -> Tuple:
     """
     Parses command line arguments
     :param args: Command line arguments inputted.
-    :return: A tuple containing the input image path and a list of operation to apply on the image.
+    :return: A tuple containing the input image path and a list of operations to apply on the image.
     :raise: ValueError in case of invalid arguments.
     """
     image_path = _parse_initialization(args)
@@ -65,7 +66,7 @@ def _parse_filter(args, i) -> Tuple:
 
     # Edge detection doesn't get arguments
     if filter in [FilterType.EDGE_DETECTION.value, FilterType.INVERT.value, FilterType.SEPIA.value]:
-        operations.append((OperationType.FILTER.value, filter))
+        operations.append(ImageOperation(type=OperationType.FILTER.value, sub_type=filter))
         return i + 1, operations
 
     elif filter == FilterType.BLUR.value:
@@ -79,7 +80,8 @@ def _parse_filter(args, i) -> Tuple:
         if x != constants.X_CMD or y != constants.Y_CMD or not x_value.isdigit() or not y_value.isdigit():
             raise ValueError(constants.INVALID_BLUR_ARGUMENTS_ERR_MSG)
 
-        operations.append((OperationType.FILTER.value, filter, int(x_value), int(y_value)))
+        operations.append(
+            ImageOperation(type=OperationType.FILTER.value, sub_type=filter, x=int(x_value), y=int(y_value)))
         return i + 5, operations
 
     elif filter == FilterType.SHARPEN.value:
@@ -91,7 +93,7 @@ def _parse_filter(args, i) -> Tuple:
         if x != constants.X_CMD or not _is_float(x_value):
             raise ValueError(constants.INVALID_SHARPEN_ARGUMENT_ERR_MSG)
 
-        operations.append((OperationType.FILTER.value, filter, float(x_value)))
+        operations.append(ImageOperation(type=OperationType.FILTER.value, sub_type=filter, x=float(x_value)))
         return i + 3, operations
 
 
@@ -115,7 +117,7 @@ def _parse_adjustment(args, i) -> Tuple:
         if i >= len(args) or not _is_signed_int(args[i]):
             raise ValueError(constants.INVALID_ADJUSTMENT_VALUE_ERR_MSG)
         value = int(args[i])
-        operations.append((OperationType.ADJUSTMENT.value, adjustment, value))
+        operations.append(ImageOperation(type=OperationType.ADJUSTMENT.value, sub_type=adjustment, value=value))
         # Moving to the next adjustment
         i += 1
     return i, operations
@@ -128,7 +130,7 @@ def _parse_display(args, i) -> Tuple:
     :param i: Current index to start iterating on
     :return: A tuple containing the next index of command line arguments and a list of the parsed display operation.
     """
-    return i, [(OperationType.DISPLAY.value,)]
+    return i, [ImageOperation(type=OperationType.DISPLAY.value)]
 
 
 def _parse_output(args, i) -> Tuple:
@@ -141,7 +143,7 @@ def _parse_output(args, i) -> Tuple:
     """
     if i >= len(args):
         raise ValueError(constants.INVALID_OUTPUT_ARGUMENT_ERR_MSG)
-    return i + 1, [(OperationType.OUTPUT.value, args[i])]
+    return i + 1, [ImageOperation(type=OperationType.OUTPUT.value, output_path=args[i])]
 
 
 def _is_signed_int(s):
