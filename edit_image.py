@@ -1,6 +1,5 @@
 import sys
-
-from cli import CLI
+from cli import parse_command_line_arguments
 from image_editor import ImageEditor
 
 
@@ -11,7 +10,7 @@ def edit_image() -> None:
     :return: None
     """
     arguments = sys.argv
-    image_path, operations = CLI.parse_command_line_arguments(arguments)
+    image_path, operations = parse_command_line_arguments(arguments)
     image_processor = ImageEditor(image_path, operations)
     image_processor.apply_operations()
 

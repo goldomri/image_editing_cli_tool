@@ -1,182 +1,97 @@
-import numpy as np
-from abc import ABC, abstractmethod
-import constants
-from PIL import Image
-from image_utils import ImageUtils
+from image_utils import *
 
 
-class Filter(ABC):
+def apply_box_blur_filter(image: Image, x: int, y: int) -> Image:
     """
-    Abstract class for image filters
+    Method for applying the Box Blur filter.
+    :param image: Image to apply filter on.
+    :param x: x size of kernel.
+    :param y: y size of kernel.
+    :return: New filtered image.
+    :raise: ValueError if x or y are not positive.
     """
-
-    def convolution(self, image_array: np.ndarray, kernel: np.ndarray) -> np.ndarray:
-        """
-        Applies a convolution with specified kernel to the image array.
-        :param image_array: Image to convolve on in numpy array form.
-        :param kernel: Kernel of the convolution.
-        :return: The new image array after convolution operation.
-        :raise: ValueError in case the kernel size is bigger than the image size.
-        """
-        # Checking if image is in grayscale, if so we need to add another dimension
-        if image_array.ndim == 2:
-            image_array = image_array[:, :, np.newaxis]
-
-        kernel_height, kernel_width = kernel.shape
-        # Checking if kernel size is valid
-        if kernel_height > image_array.shape[0] or kernel_width > image_array.shape[1]:
-            raise ValueError(constants.CONVOLUTION_KERNEL_SIZE_ERR_MSG)
-
-        # Padding the image in preparation for convolution operation
-        pad_height, pad_width = kernel_height // 2, kernel_width // 2
-        padded_image = np.pad(image_array, ((pad_height, pad_height), (pad_width, pad_width), (0, 0)),
-                              mode='reflect')
-        # Creating output array
-        new_image_array = np.zeros_like(image_array)
-        # Applying convolution operation
-        for i in range(new_image_array.shape[0]):
-            for j in range(new_image_array.shape[1]):
-                for k in range(new_image_array.shape[2]):
-                    new_image_array[i, j, k] = np.sum(kernel * padded_image[i:i + kernel_height, j:j + kernel_width, k])
-
-        # If the original image was in grayscale we need to remove the added dimension.
-        if new_image_array.shape[2] == 1:
-            new_image_array = new_image_array.squeeze(axis=2)
-        return new_image_array
-
-    @abstractmethod
-    def apply_filter(self, image: Image, x=None, y=None) -> Image:
-        """
-        Abstract method for applying the filter.
-        :param image: Image to apply filter on.
-        :param x: Optional parameter for the filter.
-        :param y: Optional parameter for the filter.
-        :return: New filtered image.
-        """
-        pass
+    # Checking if x and y are inputted
+    if x <= 0 or y <= 0:
+        raise ValueError(constants.UNSPECIFIED_KERNEL_SIZE_ERR_MSG)
+    image_array = convert_image_to_array(image)
+    kernel = np.ones((x, y)) / (x * y)
+    image_array = convolution(image_array, kernel).astype(np.uint8)
+    return Image.fromarray(image_array)
 
 
-class BoxBlurFilter(Filter):
+def apply_edge_detection_filter(image: Image) -> Image:
     """
-    Class for applying the Box Blur filter.
+    Method for applying the Edge Detection filter.
+    :param image: Image to apply filter on.
+    :return: New filtered image.
     """
+    # Converting the image to grayscale is necessary in this filter
+    image = convert_to_grayscale(image)
+    image_array = convert_image_to_array(image)
+    # Initializing filter kernels
+    sobel_x = np.array([[-1, 0, 1],
+                        [-2, 0, 2],
+                        [-1, 0, 1]])
+    sobel_y = np.array([[1, 2, 1],
+                        [0, 0, 0],
+                        [-1, -2, -1]])
+    # Applying convolution
+    grad_x = convolution(image_array, sobel_x)
+    grad_y = convolution(image_array, sobel_y)
+    # Summing the output
+    grad = np.hypot(grad_x, grad_y)
+    # Making sure output is in valid range
+    image_array = np.clip(grad, constants.MIN_INTENSITY, constants.MAX_INTENSITY).astype(np.uint8)
+    # Converting image back to RGB
+    filtered_image = Image.fromarray(image_array)
+    return convert_to_rgb(filtered_image)
 
-    def apply_filter(self, image: Image, x=None, y=None) -> Image:
-        """
-        Method for applying the Box Blur filter.
-        :param image: Image to apply filter on.
-        :param x: x size of kernel.
-        :param y: y size of kernel.
-        :return: New filtered image.
-        :raise: ValueError if x or y are not given as input.
-        """
-        # Checking if x and y are inputted
-        if not x or not y:
-            raise ValueError(constants.UNSPECIFIED_KERNEL_SIZE_ERR_MSG)
-        image_array = ImageUtils.convert_image_to_array(image)
-        kernel = np.ones((x, y)) / (x * y)
-        image_array = self.convolution(image_array, kernel).astype(np.uint8)
-        return Image.fromarray(image_array)
 
-
-class EdgeDetectionFilter(Filter):
+def apply_sharpen_filter(image: Image, sharpen_magnitude: float) -> Image:
     """
-    Class for applying the Edge Detection filter.
+    Method for applying the Sharpen filter.
+    :param image: Image to apply filter on.
+    :param sharpen_magnitude: Sharpening magnitude.
+    :return: New filtered image.
+    :raise: ValueError if sharpen_magnitude is smaller than 1.
     """
-
-    def apply_filter(self, image: Image, x=None, y=None) -> Image:
-        """
-        Method for applying the Edge Detection filter.
-        :param image: Image to apply filter on.
-        :param x: Irrelevant argument.
-        :param y: Irrelevant argument.
-        :return: New filtered image.
-        """
-        # Converting the image to grayscale is necessary in this filter
-        image = ImageUtils.convert_to_grayscale(image)
-        image_array = ImageUtils.convert_image_to_array(image)
-        # Initializing filter kernels
-        sobel_x = np.array([[-1, 0, 1],
-                            [-2, 0, 2],
-                            [-1, 0, 1]])
-        sobel_y = np.array([[1, 2, 1],
-                            [0, 0, 0],
-                            [-1, -2, -1]])
-        # Applying convolution
-        grad_x = self.convolution(image_array, sobel_x)
-        grad_y = self.convolution(image_array, sobel_y)
-        # Summing the output
-        grad = np.hypot(grad_x, grad_y)
-        # Making sure output is in valid range
-        image_array = np.clip(grad, constants.MIN_INTENSITY, constants.MAX_INTENSITY).astype(np.uint8)
-        # Converting image back to RGB
-        filtered_image = Image.fromarray(image_array)
-        return ImageUtils.convert_to_rgb(filtered_image)
+    # Checking if sharpen_magnitude is valid
+    if sharpen_magnitude < 1:
+        raise ValueError(constants.INVALID_SHARPEN_MAGNITUDE_ERR_MSG)
+    image_array = convert_image_to_array(image)
+    kernel = np.array([[0, -1, 0],
+                       [-1, 5, -1],
+                       [0, -1, 0]])
+    image_array = convolution(image_array, kernel) * sharpen_magnitude
+    image_array = np.clip(image_array, constants.MIN_INTENSITY, constants.MAX_INTENSITY).astype(np.uint8)
+    return Image.fromarray(image_array)
 
 
-class SharpenFilter(Filter):
+def apply_invert_filter(image: Image) -> Image:
     """
-    Class for applying the Sharpening filter.
+    Method for applying the Invert Colors filter.
+    :param image: Image to apply filter on.
+    :param x: Irrelevant argument.
+    :param y: Irrelevant argument.
+    :return: New filtered image.
     """
-
-    def apply_filter(self, image: Image, x=None, y=None) -> Image:
-        """
-        Method for applying the Sharpen filter.
-        :param image: Image to apply filter on.
-        :param x: Sharpening magnitude.
-        :param y: Irrelevant argument.
-        :return: New filtered image.
-        :raise: ValueError if x is smaller than 1.
-        """
-        # Checking if x is inputted
-        if not x:
-            raise ValueError(constants.UNSPECIFIED_SHARPEN_MAGNITUDE_ERR_MSG)
-        if x < 1:
-            raise ValueError(constants.INVALID_SHARPEN_MAGNITUDE_ERR_MSG)
-        image_array = ImageUtils.convert_image_to_array(image)
-        kernel = np.array([[0, -1, 0],
-                           [-1, 5, -1],
-                           [0, -1, 0]])
-        image_array = self.convolution(image_array, kernel) * x
-        image_array = np.clip(image_array, constants.MIN_INTENSITY, constants.MAX_INTENSITY).astype(np.uint8)
-        return Image.fromarray(image_array)
+    image_array = convert_image_to_array(image).astype(np.uint8)
+    inverted_image_array = constants.MAX_INTENSITY - image_array
+    return Image.fromarray(inverted_image_array)
 
 
-class InvertFilter(Filter):
+def apply_sepia_filter(image: Image) -> Image:
     """
-    Class for applying an inverting colors filter.
+    Method for applying the Sepia filter.
+    :param image: Image to apply filter on.
+    :param x: Irrelevant argument.
+    :param y: Irrelevant argument.
+    :return: New filtered image.
     """
-
-    def apply_filter(self, image: Image, x=None, y=None) -> Image:
-        """
-        Method for applying the Invert Colors filter.
-        :param image: Image to apply filter on.
-        :param x: Irrelevant argument.
-        :param y: Irrelevant argument.
-        :return: New filtered image.
-        """
-        image_array = ImageUtils.convert_image_to_array(image).astype(np.uint8)
-        inverted_image_array = constants.MAX_INTENSITY - image_array
-        return Image.fromarray(inverted_image_array)
-
-
-class SepiaFilter(Filter):
-    """
-    Class for applying a Sepia filter.
-    """
-
-    def apply_filter(self, image: Image, x=None, y=None) -> Image:
-        """
-        Method for applying the Sepia filter.
-        :param image: Image to apply filter on.
-        :param x: Irrelevant argument.
-        :param y: Irrelevant argument.
-        :return: New filtered image.
-        """
-        image_array = ImageUtils.convert_image_to_array(image)
-        sepia_filter = np.array([[0.393, 0.769, 0.189],
-                                 [0.349, 0.686, 0.168],
-                                 [0.272, 0.534, 0.131]])
-        image_array = image_array.dot(sepia_filter.T)
-        image_array = np.clip(image_array, constants.MIN_INTENSITY, constants.MAX_INTENSITY).astype(np.uint8)
-        return Image.fromarray(image_array)
+    image_array = convert_image_to_array(image)
+    sepia_filter = np.array([[0.393, 0.769, 0.189],
+                             [0.349, 0.686, 0.168],
+                             [0.272, 0.534, 0.131]])
+    image_array = image_array.dot(sepia_filter.T)
+    image_array = np.clip(image_array, constants.MIN_INTENSITY, constants.MAX_INTENSITY).astype(np.uint8)
+    return Image.fromarray(image_array)

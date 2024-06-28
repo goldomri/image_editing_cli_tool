@@ -1,8 +1,8 @@
 from typing import List, Tuple
 from enums import AdjustmentType, FilterType, OperationType
-from image_adjustments import ImageAdjustment
+from image_adjustments import *
 from image_filters import *
-from image_utils import ImageUtils
+from image_utils import *
 
 
 class ImageEditor:
@@ -13,26 +13,26 @@ class ImageEditor:
     def __init__(self, image_path: str, operations: List):
         try:
             self._image = Image.open(image_path)
-            self._image = ImageUtils.convert_to_rgb(self._image)
+            self._image = convert_to_rgb(self._image)
         except IOError as e:
             raise IOError(f"Unable to open image: {e}.")
 
         self._operations = operations
 
         self._adjustments = {
-            AdjustmentType.BRIGHTNESS.value: ImageAdjustment.adjust_brightness,
-            AdjustmentType.CONTRAST.value: ImageAdjustment.adjust_contrast,
-            AdjustmentType.SATURATION.value: ImageAdjustment.adjust_saturation,
-            AdjustmentType.TEMPERATURE.value: ImageAdjustment.adjust_temperature,
-            AdjustmentType.EXPOSURE.value: ImageAdjustment.adjust_exposure
+            AdjustmentType.BRIGHTNESS.value: adjust_brightness,
+            AdjustmentType.CONTRAST.value: adjust_contrast,
+            AdjustmentType.SATURATION.value: adjust_saturation,
+            AdjustmentType.TEMPERATURE.value: adjust_temperature,
+            AdjustmentType.EXPOSURE.value: adjust_exposure
         }
 
         self._filters = {
-            FilterType.BLUR.value: BoxBlurFilter(),
-            FilterType.EDGE_DETECTION.value: EdgeDetectionFilter(),
-            FilterType.SHARPEN.value: SharpenFilter(),
-            FilterType.INVERT.value: InvertFilter(),
-            FilterType.SEPIA.value: SepiaFilter()
+            FilterType.BLUR.value: apply_box_blur_filter,
+            FilterType.EDGE_DETECTION.value: apply_edge_detection_filter,
+            FilterType.SHARPEN.value: apply_sharpen_filter,
+            FilterType.INVERT.value: apply_invert_filter,
+            FilterType.SEPIA.value: apply_sepia_filter
         }
 
     def apply_operations(self) -> None:
@@ -71,19 +71,18 @@ class ImageEditor:
         :return: None. Changes self._image to the filtered image.
         """
         filter_type = filter_operation[1]
-        filter = self._filters[filter_type]
 
         # filters with two parameters
         if filter_type == FilterType.BLUR.value:
-            self._image = filter.apply_filter(self._image, filter_operation[2], filter_operation[3])
+            self._image = self._filters[filter_type](self._image, filter_operation[2], filter_operation[3])
 
         # filters with one parameter
         elif filter_type == FilterType.SHARPEN.value:
-            self._image = filter.apply_filter(self._image, filter_operation[2])
+            self._image = self._filters[filter_type](self._image, filter_operation[2])
 
         # Filters with no parameters
         elif filter_type in [FilterType.EDGE_DETECTION.value, FilterType.INVERT.value, FilterType.SEPIA.value]:
-            self._image = filter.apply_filter(self._image)
+            self._image = self._filters[filter_type](self._image)
 
     def _display_image(self) -> None:
         """
