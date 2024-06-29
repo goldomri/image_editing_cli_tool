@@ -1,6 +1,6 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enums import AdjustmentType, FilterType, OperationType
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 
 @dataclass

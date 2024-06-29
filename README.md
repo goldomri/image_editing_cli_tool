@@ -10,10 +10,14 @@ This project is an Advanced Image Editing CLI Tool designed to apply custom filt
   - <u>*Box Blur*</u>: Blurs the image by averaging the pixel values in a user-defined neighborhood.
   - <u>*Edge Detection*</u>: Uses the Sobel operator to highlight edges in the image.
   - <u>*Sharpen*</u>: Enhances edges by increasing the contrast between adjacent pixels.
+  - <u>*Invert*</u>: Inverts colors of an image by switching each pixel value to it's opposite value.
+  - <u>*Sepia*</u>: Imparts a mellow tone to an image, giving it a vintage appearance.
 - **Adjustments**:
   - <u>*Brightness*</u>: Adjusts the brightness of the image.
   - <u>*Contrast*</u>: Modifies the contrast of the image.
   - <u>*Saturation*</u>: Alters the saturation of the image.
+  - <u>*Temperature*</u>: Adjusts the temperature of the image.
+  - <u>*Exposure*</u>: Modifies the exposure of the image.
 - **Layering**: Supports applying multiple filters and adjustments in sequence.
 - **Display / Save**: Allows users to display the edited image or save it to a designated path.
 
@@ -22,7 +26,7 @@ This project is an Advanced Image Editing CLI Tool designed to apply custom filt
 Then, use the tool by running the following command from the command line:
 
 ```
-python edit_image.py edit_image --image <path-to-image> [--filter <filter-name> --filter-specific_name 
+python main.py edit_image --image <path-to-image> [--filter <filter-name> --filter-specific_name 
 <filter-specific_value>] [--adjust <adjustment-name> <value>] [--filter <filter-name> --filter-specific_name 
 <filter-specific_value>] ... [--display] [--output <output_path>]
 ```
@@ -31,11 +35,11 @@ python edit_image.py edit_image --image <path-to-image> [--filter <filter-name> 
 
 - Apply a blur filter with kernel size of [3,3] and increase brightness by 60 units, while displaying the result image:
   ```
-  python edit_image.py edit_image --image input.png --filter blur --x 3 --y 3 --adjust brightness 60 --display
+  python main.py edit_image --image input.png --filter blur --x 3 --y 3 --adjust brightness 60 --display
   ```
 - Decrease contrast by 20 units and apply a sharpening filter with magnitude 1.1, while saving the result image:
   ```
-  python edit_image.py edit_image --image input.png --adjust contrast -20 --filter sharpen --x 1.1 --output output.png
+  python main.py edit_image --image input.png --adjust contrast -20 --filter sharpen --x 1.1 --output output.png
   ```
 
 ## API
@@ -54,7 +58,7 @@ The tool supports the following commands:
   2.  <u>*Edge Detection*</u> - Detects edges of an image. Doesn't need to receive arguments.
                   Example command could be: **`--filter edge_detection`** to apply an edge detection filter.
 
-  3.  <u>*Sharpen*</u> - Sharpens and image with a given magnitude factor. Should recieve x arguments representing
+  3.  <u>*Sharpen*</u> - Sharpens and image with a given magnitude factor. Should receive x arguments representing
                   the magnitude of the filter. x should be a float greater than 1.
                   Example command could be: **`--filter sharpen --x 1.2`** to apply a sharpening filter with magnitude of 1.2.
   
