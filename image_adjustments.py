@@ -104,7 +104,7 @@ def adjust_temperature(image: Image, value: int) -> Image:
     return Image.fromarray(adjusted_image)
 
 
-def adjust_exposure(image: Image, value: float) -> Image:
+def adjust_exposure(image: Image, value: int) -> Image:
     """
     Adjusts exposure of an image.
     :param image: Input image.

@@ -12,5 +12,5 @@ class ImageOperation:
     sub_type: Optional[Union[AdjustmentType, FilterType]] = None
     x: Optional[Union[int, float]] = None
     y: Optional[int] = None
-    value: Optional[Union[int, float]] = None
+    value: Optional[int] = None
     output_path: Optional[str] = None
